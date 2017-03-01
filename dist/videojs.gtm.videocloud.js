@@ -214,7 +214,7 @@
           'eventValue': value,
           'nonInteraction': nonInteraction
         });*/
-        dataLayer.push({ 'event' : 'videoEvent'
+        dataLayer.push({ 'event' : 'videoEvent',
           'eventCategory': eventCategory,
           'eventAction': action,
           'eventLabel': eventLabel,
@@ -274,7 +274,7 @@
             'nonInteraction': true
           });*/
 
-          return dataLayer.push({ 'event' : 'videoEvent'
+          return dataLayer.push({ 'event' : 'videoEvent',
           'eventCategory': eventCategory,
           'eventAction': getEventName('player_load'),
           'eventLabel': href,
