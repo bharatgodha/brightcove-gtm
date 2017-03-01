@@ -2,7 +2,6 @@
 * videojs-ga-videocloud - v0.4.2 - 2016-08-24
 * Based on videojs-ga 0.4.2
 * Copyright (c) 2016 Michael Bensoussan
-* Modified for Google Tag Manager by Bharat Godha
 * Licensed MIT
 */
 (function() {
@@ -17,7 +16,7 @@
     referrer = document.createElement('a');
     referrer.href = document.referrer;
     if (self !== top && window.location.host === 'preview-players.brightcove.net' && referrer.hostname === 'studio.brightcove.com') {
-      videojs.log('GTM plugin will not track events in Video Cloud Studio');
+      videojs.log('Google analytics plugin will not track events in Video Cloud Studio');
       return;
     }
     player = this;
@@ -207,7 +206,7 @@
       if (sendbeaconOverride) {
         sendbeaconOverride(eventCategory, action, eventLabel, value, nonInteraction);
       } else if (window.ga) {
-        dataLayer.push({ 'event' : 'videoEvent',
+        ga(trackerName + 'send', 'event', {
           'eventCategory': eventCategory,
           'eventAction': action,
           'eventLabel': eventLabel,
@@ -259,14 +258,13 @@
         if (sendbeaconOverride) {
           return sendbeaconOverride(eventCategory, getEventName('player_load'), href, iframe, true);
         } else if (window.ga) {
-          dataLayer.push({ 'event' : 'videoEvent',
-	          'eventCategory': eventCategory,
-	          'eventAction': getEventName('player_load'),
-	          'eventLabel': href,
-	          'eventValue': iframe,
-	          'nonInteraction': true
-        	});
-          return "";
+          return ga(trackerName + 'send', 'event', {
+            'eventCategory': eventCategory,
+            'eventAction': getEventName('player_load'),
+            'eventLabel': href,
+            'eventValue': iframe,
+            'nonInteraction': true
+          });
         } else if (window._gaq) {
           return _gaq.push(['_trackEvent', eventCategory, getEventName('player_load'), href, iframe, false]);
         } else {
@@ -280,4 +278,3 @@
   });
 
 }).call(this);
-
