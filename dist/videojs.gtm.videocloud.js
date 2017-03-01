@@ -207,13 +207,6 @@
       if (sendbeaconOverride) {
         sendbeaconOverride(eventCategory, action, eventLabel, value, nonInteraction);
       } else if (window.ga) {
-        /*ga(trackerName + 'send', 'event', {
-          'eventCategory': eventCategory,
-          'eventAction': action,
-          'eventLabel': eventLabel,
-          'eventValue': value,
-          'nonInteraction': nonInteraction
-        });*/
         dataLayer.push({ 'event' : 'videoEvent',
           'eventCategory': eventCategory,
           'eventAction': action,
@@ -266,21 +259,14 @@
         if (sendbeaconOverride) {
           return sendbeaconOverride(eventCategory, getEventName('player_load'), href, iframe, true);
         } else if (window.ga) {
-          /*return ga(trackerName + 'send', 'event', {
-            'eventCategory': eventCategory,
-            'eventAction': getEventName('player_load'),
-            'eventLabel': href,
-            'eventValue': iframe,
-            'nonInteraction': true
-          });*/
-
-          return dataLayer.push({ 'event' : 'videoEvent',
-          'eventCategory': eventCategory,
-          'eventAction': getEventName('player_load'),
-          'eventLabel': href,
-          'eventValue': iframe,
-          'nonInteraction': true
-        });
+          dataLayer.push({ 'event' : 'videoEvent',
+	          'eventCategory': eventCategory,
+	          'eventAction': getEventName('player_load'),
+	          'eventLabel': href,
+	          'eventValue': iframe,
+	          'nonInteraction': true
+        	});
+          return "";
         } else if (window._gaq) {
           return _gaq.push(['_trackEvent', eventCategory, getEventName('player_load'), href, iframe, false]);
         } else {
