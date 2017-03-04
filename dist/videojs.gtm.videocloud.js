@@ -207,7 +207,8 @@
             if (sendbeaconOverride) {
                 sendbeaconOverride(eventCategory, action, eventLabel, value, nonInteraction);
             } else if (window.ga) {
-                ga(trackerName + 'send', 'event', {
+                dataLayer.push({
+                    'event': 'videoEvent',
                     'eventCategory': eventCategory,
                     'eventAction': action,
                     'eventLabel': eventLabel,
