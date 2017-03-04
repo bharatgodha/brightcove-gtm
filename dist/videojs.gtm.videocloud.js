@@ -1,22 +1,21 @@
 /*
- * videojs-ga-videocloud - v0.4.2 - 2016-08-24
- * Based on videojs-ga 0.4.2
- * Copyright (c) 2016 Michael Bensoussan
- * Modified for Google Tag Manager by Bharat Godha
+ * videojs-ga - v0.4.1 - 2015-08-10
+ * Copyright (c) 2015 Michael Bensoussan
+ * Modified for Google Tag Manager by Isaac Abramowitz
  * Licensed MIT
  */
 (function() {
     var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
     videojs.plugin('ga', function(options) {
-        var adStateRegex, currentVideo, dataSetupOptions, defaultLabel, defaultsEventsToTrack, end, endTracked, error, eventCategory, eventLabel, eventNames, eventsToTrack, fullscreen, getEventName, isInAdState, loaded, parsedOptions, pause, percentsAlreadyTracked, percentsPlayedInterval, play, player, referrer, resize, seekEnd, seekStart, seeking, sendbeacon, sendbeaconOverride, start, startTracked, timeupdate, tracker, trackerName, volumeChange,
+        var adStateRegex, currentVideo, dataSetupOptions, defaultLabel, defaultsEventsToTrack, end, endTracked, error, eventCategory, eventLabel, eventNames, eventsToTrack, fullscreen, getEventName, href, iframe, isInAdState, loaded, parsedOptions, pause, percentsAlreadyTracked, percentsPlayedInterval, play, player, referrer, resize, seekEnd, seekStart, seeking, sendbeacon, start, startTracked, timeupdate, tracker, volumeChange,
             _this = this;
         if (options == null) {
             options = {};
         }
         referrer = document.createElement('a');
         referrer.href = document.referrer;
-        if (self !== top && window.location.host === 'preview-players.brightcove.net' && referrer.hostname === 'studio.brightcove.com') {
+        if (self !== top && window.location.host === 'preview-players.brightcove.net' && (referrer.hostname = 'studio.brightcove.com')) {
             videojs.log('GTM plugin will not track events in Video Cloud Studio');
             return;
         }
@@ -33,13 +32,6 @@
         percentsPlayedInterval = options.percentsPlayedInterval || dataSetupOptions.percentsPlayedInterval || 10;
         eventCategory = options.eventCategory || dataSetupOptions.eventCategory || 'Brightcove Player';
         defaultLabel = options.eventLabel || dataSetupOptions.eventLabel;
-        sendbeaconOverride = options.sendbeaconOverride || false;
-        options.debug = options.debug || false;
-        options.trackerName = options.trackerName || null;
-        trackerName = '';
-        if (typeof options.trackerName === 'string') {
-            trackerName = options.trackerName + '.';
-        }
         percentsAlreadyTracked = [];
         startTracked = false;
         endTracked = false;
@@ -75,25 +67,6 @@
             }
             return name;
         };
-        if (window.location.host === 'players.brightcove.net' || window.location.host === 'preview-players.brightcove.net' || trackerName !== '') {
-            tracker = options.tracker || dataSetupOptions.tracker;
-            if (tracker) {
-                (function(i, s, o, g, r, a, m) {
-                    i["GoogleAnalyticsObject"] = r;
-                    i[r] = i[r] || function() {
-                        return (i[r].q = i[r].q || []).push(arguments);
-                    };
-                    i[r].l = 1 * new Date();
-                    a = s.createElement(o);
-                    m = s.getElementsByTagName(o)[0];
-                    a.async = 1;
-                    a.src = g;
-                    return m.parentNode.insertBefore(a, m);
-                })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
-                ga('create', tracker, 'auto', options.trackerName);
-                ga(trackerName + 'require', 'displayfeatures');
-            }
-        }
         adStateRegex = /(\s|^)vjs-ad-(playing|loading)(\s|$)/;
         isInAdState = function(player) {
             return adStateRegex.test(player.el().className);
@@ -197,32 +170,32 @@
         fullscreen = function() {
             var currentTime;
             currentTime = Math.round(this.currentTime());
-            if (this.isFullscreen()) {
+            if ((typeof this.isFullscreen === "function" ? this.isFullscreen() : void 0) || (typeof this.isFullScreen === "function" ? this.isFullScreen() : void 0)) {
                 sendbeacon(getEventName('fullscreen_enter'), false, currentTime);
             } else {
                 sendbeacon(getEventName('fullscreen_exit'), false, currentTime);
             }
         };
-        sendbeacon = function(action, nonInteraction, value) {
-            if (sendbeaconOverride) {
-                sendbeaconOverride(eventCategory, action, eventLabel, value, nonInteraction);
-            } else if (window.ga) {
-                dataLayer.push({
-                    'event': 'videoEvent',
-                    'eventCategory': eventCategory,
-                    'eventAction': action,
-                    'eventLabel': eventLabel,
-                    'eventValue': value,
-                    'nonInteraction': nonInteraction
-                });
-            } else if (window._gaq) {
-                _gaq.push(['_trackEvent', eventCategory, action, eventLabel, value, nonInteraction]);
-            } else if (options.debug) {
-                videojs.log("Google Analytics not detected");
-            }
+        sendbeacon = function(actionn, nonInteraction, value) {
+            dataLayer.push({
+                'videoCategory': eventCategory,
+                'videoAction': action,
+                'videoLabel': eventLabel,
+                'event': 'videoEvent',
+                'eventValue': value,
+                'nonInteraction': nonInteraction
+            });
         };
+        if (__indexOf.call(eventsToTrack, "player_load") >= 0) {
+            if (self !== top) {
+                href = document.referrer;
+                iframe = 1;
+            } else {
+                href = window.location.href;
+                iframe = 0;
+            }
+        }
         this.ready(function() {
-            var href, iframe;
             this.on("loadedmetadata", loaded);
             this.on("timeupdate", timeupdate);
             if (__indexOf.call(eventsToTrack, "end") >= 0) {
@@ -250,33 +223,16 @@
                 this.on("fullscreenchange", fullscreen);
             }
             if (__indexOf.call(eventsToTrack, "player_load") >= 0) {
-                if (self !== top) {
-                    href = document.referrer;
-                    iframe = 1;
-                } else {
-                    href = window.location.href;
-                    iframe = 0;
-                }
-                if (sendbeaconOverride) {
-                    return sendbeaconOverride(eventCategory, getEventName('player_load'), href, iframe, true);
-                } else if (window.ga) {
-                    return ga(trackerName + 'send', 'event', {
-                        'eventCategory': eventCategory,
-                        'eventAction': getEventName('player_load'),
-                        'eventLabel': href,
-                        'eventValue': iframe,
-                        'nonInteraction': true
-                    });
-                } else if (window._gaq) {
-                    return _gaq.push(['_trackEvent', eventCategory, getEventName('player_load'), href, iframe, false]);
-                } else {
-                    return videojs.log("Google Analytics not detected");
-                }
+                dataLayer.push({
+                    'videoCategory': eventCategory,
+                    'videoAction': getEventName('player_load'),
+                    'videoLabel': eventLabel,
+                    'event': 'videoEvent',
+                    'eventValue': iframe,
+                    'nonInteraction': true
+                });
             }
         });
-        return {
-            'sendbeacon': sendbeacon
-        };
     });
 
 }).call(this);
