@@ -176,7 +176,7 @@
                 sendbeacon(getEventName('fullscreen_exit'), false, currentTime);
             }
         };
-        sendbeacon = function(actionn, nonInteraction, value) {
+        sendbeacon = function(action, nonInteraction, value) {
             dataLayer.push({
                 'videoCategory': eventCategory,
                 'videoAction': action,
