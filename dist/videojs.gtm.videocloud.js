@@ -178,9 +178,9 @@
         };
         sendbeacon = function(action, nonInteraction, value) {
             dataLayer.push({
-                'videoCategory': eventCategory,
-                'videoAction': action,
-                'videoLabel': eventLabel,
+                'eventCategory': eventCategory,
+                'eventAction': action,
+                'eventLabel': eventLabel,
                 'event': 'videoEvent',
                 'eventValue': value,
                 'nonInteraction': nonInteraction
@@ -224,9 +224,9 @@
             }
             if (__indexOf.call(eventsToTrack, "player_load") >= 0) {
                 dataLayer.push({
-                    'videoCategory': eventCategory,
-                    'videoAction': getEventName('player_load'),
-                    'videoLabel': eventLabel,
+                    'eventCategory': eventCategory,
+                    'eventAction': getEventName('player_load'),
+                    'eventLabel': href,
                     'event': 'videoEvent',
                     'eventValue': iframe,
                     'nonInteraction': true
