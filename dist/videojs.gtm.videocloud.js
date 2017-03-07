@@ -186,15 +186,7 @@
                 'nonInteraction': nonInteraction
             });
         };
-        if (__indexOf.call(eventsToTrack, "player_load") >= 0) {
-            if (self !== top) {
-                href = document.referrer;
-                iframe = 1;
-            } else {
-                href = window.location.href;
-                iframe = 0;
-            }
-        }
+
         this.ready(function() {
             this.on("loadedmetadata", loaded);
             this.on("timeupdate", timeupdate);
@@ -223,6 +215,13 @@
                 this.on("fullscreenchange", fullscreen);
             }
             if (__indexOf.call(eventsToTrack, "player_load") >= 0) {
+                if (self !== top) {
+                    href = document.referrer;
+                    iframe = 1;
+                } else {
+                    href = window.location.href;
+                    iframe = 0;
+                }
                 dataLayer.push({
                     'eventCategory': eventCategory,
                     'eventAction': getEventName('player_load'),
