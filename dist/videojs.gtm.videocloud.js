@@ -1,7 +1,8 @@
 /*
  * videojs-ga - v0.4.1 - 2015-08-10
  * Copyright (c) 2015 Michael Bensoussan
- * Modified for Google Tag Manager by Isaac Abramowitz
+ * Enhanced for Google Tag Manager by Bharat Godha
+ *   Using the original GTM file as modified by Isaac Abramowitz
  * Licensed MIT
  */
 (function() {
